@@ -1,0 +1,38 @@
+{
+  "name": "kube-copilot",
+  "version": "1.0.0",
+  "description": "Natural Language Kubernetes TUI powered by GitHub Copilot",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "kube-copilot": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json && tsc -p tsconfig.mcp.json",
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.tsx"
+  },
+  "keywords": [
+    "kubernetes",
+    "kubectl",
+    "copilot",
+    "tui",
+    "mcp"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@github/copilot-sdk": "^0.1.0",
+    "@modelcontextprotocol/sdk": "^1.12.1",
+    "ink": "^5.2.0",
+    "ink-text-input": "^6.0.0",
+    "react": "^18.3.1",
+    "turndown": "^7.2.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.31",
+    "@types/react": "^18.3.23",
+    "@types/turndown": "^5.0.5",
+    "typescript": "^5.8.3"
+  }
+}
