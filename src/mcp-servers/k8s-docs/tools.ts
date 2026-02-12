@@ -54,8 +54,7 @@ async function searchWithGoogle(
   query: string,
   apiKey: string
 ): Promise<SearchResult[]> {
-  // Google Custom Search Engine scoped to kubernetes.io
-  const cseId = "011673866795133980826:kubernetes";
+  const cseId = process.env["K8S_DOCS_SEARCH_CSE_ID"] || "011673866795133980826:kubernetes";
   const url = new URL("https://www.googleapis.com/customsearch/v1");
   url.searchParams.set("key", apiKey);
   url.searchParams.set("cx", cseId);

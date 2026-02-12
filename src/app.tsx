@@ -87,11 +87,13 @@ function AppInner() {
         const sess = await client.createSession({
           streaming: true,
           systemMessage: {
-            content: `You are a Kubernetes expert assistant.
-- Convert user natural language into kubectl commands
-- Always warn before destructive operations (delete, drain, cordon)
-- When information is insufficient, search docs via MCP and cite sources
-- Display kubectl commands before execution and require user confirmation`,
+            content: [
+              "You are a Kubernetes expert assistant.",
+              "- Convert user natural language into kubectl commands",
+              "- Always warn before destructive operations (delete, drain, cordon)",
+              "- When information is insufficient, search docs via MCP and cite sources",
+              "- Display kubectl commands before execution and require user confirmation",
+            ].join("\n"),
           },
           mcpServers: {
             "k8s-docs": {
