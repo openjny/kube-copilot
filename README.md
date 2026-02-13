@@ -1,6 +1,6 @@
-# ⎈ kube-copilot
+# kube-copilot
 
-> **Talk to your Kubernetes cluster in plain English — right from the terminal.**
+Talk to your Kubernetes cluster in natural language.
 
 <p align="center">
   <img src="https://img.shields.io/badge/GitHub%20Copilot-Powered-blue?logo=github" alt="Copilot Powered" />
@@ -8,9 +8,11 @@
   <img src="https://img.shields.io/badge/TUI-Ink%20%2B%20React-ff69b4" alt="Ink + React" />
 </p>
 
+![Demo](./docs/assets/demo.mp4)
+
 ## What is this?
 
-**kube-copilot** is a terminal UI (TUI) that lets you manage Kubernetes clusters using natural language. No more memorizing `kubectl` flags — just say what you want in English and let Copilot figure out the rest.
+**kube-copilot** is a terminal UI (TUI) that lets you manage Kubernetes clusters using natural language. No more memorizing `kubectl` flags — just say what you want in natural language and let Copilot figure out the rest.
 
 ```
 💬 You: show me all pods that are failing in the production namespace
@@ -34,51 +36,43 @@ kubectl is powerful but has a steep learning curve. Even experienced engineers o
 | 🔄 **Auto-reconnect**             | Session drops? It reconnects to Copilot automatically                                            |
 | ⏱️ **Command timeout**            | kubectl commands auto-timeout at 30s to prevent hanging                                          |
 
-## Demo
-
-```
-┌──────────────────────────────────────────────┐
-│  ⎈ kube-copilot  │ cluster: my-aks │ ns: default │
-├──────────────────────────────────────────────┤
-│ 💬 You:                                       │
-│   list all deployments with less than 2 replicas │
-│                                               │
-│ ⏳ run_kubectl running…                       │
-│ ✅ run_kubectl                                │
-│ ┌───────────────────────────────────────────┐ │
-│ │ NAME          READY   UP-TO-DATE  ...     │ │
-│ │ nginx-test    1/1     1           ...     │ │
-│ └───────────────────────────────────────────┘ │
-│                                               │
-│ 🤖 Copilot:                                   │
-│   Found 1 deployment with < 2 replicas. ...   │
-├──────────────────────────────────────────────┤
-│ > _                                           │
-└──────────────────────────────────────────────┘
-```
-
 ## Architecture
 
-```
-┌──────────────────────────────────────────────────────────┐
-│                  kube-copilot TUI (Ink)                   │
-│                                                          │
-│   User Input ──→ CopilotSession (@github/copilot-sdk)   │
-│                    ├── tools: run_kubectl,                │
-│                    │          get_cluster_context         │
-│                    └── mcpServers:                        │
-│                          k8s-docs  (local / stdio)       │
-│                          ms-learn  (remote / HTTP)       │
-└────────────────────────────┬─────────────────────────────┘
-                             │ JSON-RPC
-                  ┌──────────▼──────────┐
-                  │   Copilot CLI       │
-                  │   (LLM routing)     │
-                  └──┬────────┬────────┬┘
-                     │        │        │
-                     ▼        ▼        ▼
-               K8s Cluster  K8s Docs  MS Learn
-               (kubectl)    MCP ⚡    MCP 🌐
+```mermaid
+flowchart TB
+    subgraph TUI ["kube-copilot TUI (Ink + React)"]
+        Input["InputBar"]
+        Timeline["Timeline"]
+        Confirm["ConfirmationPrompt"]
+    end
+
+    Input -->|user prompt| Session["CopilotSession\n(@github/copilot-sdk)"]
+    Session -->|events| Timeline
+
+    Session -->|JSON-RPC| Copilot["Copilot CLI\n(LLM routing)"]
+    Copilot -->|tool call| Session
+
+    subgraph Tools ["Copilot Tools"]
+        kubectl["run_kubectl"]
+        cluster["get_cluster_context"]
+    end
+
+    subgraph MCP ["MCP Servers"]
+        k8sdocs["k8s-docs\n(stdio)"]
+        mslearn["microsoft-learn\n(streamable HTTP)"]
+    end
+
+    Session --> kubectl
+    Session --> cluster
+    Session --> k8sdocs
+    Session --> mslearn
+
+    kubectl -->|destructive cmd| Confirm
+    kubectl -->|exec| K8s["Kubernetes\nCluster"]
+    cluster -->|exec| K8s
+
+    k8sdocs -->|search and fetch| K8sSite["kubernetes.io"]
+    mslearn -->|search and fetch| MSLearn["learn.microsoft.com"]
 ```
 
 ## MCP Integration
