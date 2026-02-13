@@ -57,11 +57,15 @@ export const runKubectl = defineTool("run_kubectl", {
   handler: async (args: unknown) => {
     const { command } = args as { command: string };
     const destructive = isDestructive(command);
-    const requestConfirmation = getRequestConfirmation();
-    const approved = await requestConfirmation(command, destructive);
-    if (!approved) {
-      return { status: "cancelled", message: "User declined the command" };
+
+    if (destructive) {
+      const requestConfirmation = getRequestConfirmation();
+      const approved = await requestConfirmation(command, destructive);
+      if (!approved) {
+        return { status: "cancelled", message: "User declined the command" };
+      }
     }
+
     return await execKubectl(command);
   },
 });

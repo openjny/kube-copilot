@@ -10,7 +10,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json && tsc -p tsconfig.mcp.json",
     "start": "node dist/index.js",
-    "dev": "tsx src/index.tsx"
+    "dev": "tsc -p tsconfig.mcp.json && tsx src/index.tsx"
   },
   "keywords": [
     "kubernetes",
@@ -33,6 +33,7 @@
     "@types/node": "^22.15.31",
     "@types/react": "^18.3.23",
     "@types/turndown": "^5.0.5",
+    "tsx": "^4.21.0",
     "typescript": "^5.8.3"
   }
 }

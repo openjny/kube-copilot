@@ -54,6 +54,26 @@ This repository is for the following hackathon event:
 - Review Git commit history before pushing
 - Enable GitHub Secret Protection
 
+## Debugging
+
+This app is an Ink-based TUI, so `console.log` output is not visible during runtime. Use the file-based logger (`src/lib/logger.ts`) instead.
+
+- Import: `import { logger } from "./lib/logger.js";`
+- Usage: `logger.debug(...)`, `logger.info(...)`, `logger.warn(...)`, `logger.error(...)`
+- Logs are written to `debug.log` in the project root (git-ignored)
+
+To monitor logs in real time, open a separate terminal and run:
+
+```powershell
+Get-Content debug.log -Wait -Tail 50
+```
+
+Or on macOS/Linux:
+
+```bash
+tail -f debug.log
+```
+
 ## Recommended Tools & Resources
 
 - [GitHub Copilot CLI SDK](https://github.com/github/copilot-sdk) — CLI tool development
