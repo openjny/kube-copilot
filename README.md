@@ -8,7 +8,7 @@ Talk to your Kubernetes cluster in natural language.
   <img src="https://img.shields.io/badge/TUI-Ink%20%2B%20React-ff69b4" alt="Ink + React" />
 </p>
 
-![Demo](./docs/assets/demo.mp4)
+![Demo](./docs/assets/demo.gif)
 
 ## What is this?
 
